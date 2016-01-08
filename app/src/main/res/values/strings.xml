@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Sms Scheduler</string>
+    <string name="form_hint_contact">To</string>
+    <string name="form_hint_message">Message</string>
+    <string name="form_button_add">Schedule</string>
+    <string name="form_button_cancel">Cancel</string>
+    <string name="form_button_delete">Delete</string>
+    <string name="form_validation_datetime">Please choose future date</string>
+    <string name="list_button_add">Schedule a message</string>
+    <string name="list_sms_info_template">%1$s to %2$s at %3$s</string>
+    <string name="list_status_pending">Will send</string>
+    <string name="list_status_failed">Failed</string>
+    <string name="list_status_sent">Sent</string>
+    <string name="list_status_delivered">Delivered</string>
+    <string name="notification_title_success">Message sent</string>
+    <string name="notification_title_failure">Could not send message</string>
+    <string name="notification_message_success">Message to %1$s has been successfully sent</string>
+    <string name="notification_message_failure">Could not send message to %1$s: %2$s</string>
+    <string name="error_generic">Internal error</string>
+    <string name="error_no_service">No service</string>
+    <string name="error_null_pdu">Internal error</string>
+    <string name="error_radio_off">Phone in airplane mode</string>
+    <string name="error_unknown">Unknown error</string>
+</resources>

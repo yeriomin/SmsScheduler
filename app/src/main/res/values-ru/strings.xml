@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="form_hint_contact">Адресат</string>
+    <string name="form_hint_message">Сообщение</string>
+    <string name="form_button_add">Запланировать</string>
+    <string name="form_button_cancel">Отменить</string>
+    <string name="form_button_delete">Удалить</string>
+    <string name="form_validation_datetime">Выберите дату в будущем</string>
+    <string name="list_button_add">Запланировать отправку</string>
+    <string name="list_sms_info_template">%1$s адресату %2$s в %3$s</string>
+    <string name="list_status_pending">Будет отправлено</string>
+    <string name="list_status_failed">Не удалось послать</string>
+    <string name="list_status_sent">Отправлено</string>
+    <string name="list_status_delivered">Доставлено</string>
+    <string name="notification_title_success">Сообщение отправлено</string>
+    <string name="notification_title_failure">Не удалось отправить сообщение</string>
+    <string name="notification_message_success">Сообщение адресату %1$s отправлено</string>
+    <string name="notification_message_failure">Не удалось отправить сообщение адресату %1$s: %2$s</string>
+    <string name="error_generic">Внутренняя ошибка</string>
+    <string name="error_no_service">Нет связи с оператором</string>
+    <string name="error_null_pdu">Внутренняя ошибка</string>
+    <string name="error_radio_off">Телефон в режиме \"В самолёте\"</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+</resources>
