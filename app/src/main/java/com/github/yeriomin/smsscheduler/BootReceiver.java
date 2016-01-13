@@ -15,13 +15,15 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
-        ArrayList<SmsModel> pendingSms = getPendingSms();
-        Iterator<SmsModel> i = pendingSms.iterator();
-        SmsModel sms;
-        while (i.hasNext()) {
-            sms = i.next();
-            scheduleAlarm(sms);
+        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+            this.context = context;
+            ArrayList<SmsModel> pendingSms = getPendingSms();
+            Iterator<SmsModel> i = pendingSms.iterator();
+            SmsModel sms;
+            while (i.hasNext()) {
+                sms = i.next();
+                scheduleAlarm(sms);
+            }
         }
     }
 

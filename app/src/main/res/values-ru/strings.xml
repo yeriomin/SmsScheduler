@@ -21,4 +21,7 @@
     <string name="error_null_pdu">Внутренняя ошибка</string>
     <string name="error_radio_off">Телефон в режиме \"В самолёте\"</string>
     <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="pref_send_delivery_report">Отчёты о доставке SMS</string>
+    <string name="pref_send_delivery_report_summary">Эта возможность может быть платной у некоторых операторов</string>
+    <string name="menu_settings">Настройки</string>
 </resources>

@@ -39,18 +39,18 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/form_button_add"
-            android:id="@+id/button_add"
-            android:onClick="scheduleSms" />
+            android:text="@string/form_button_cancel"
+            android:id="@+id/button_cancel"
+            android:onClick="unscheduleSms"
+            android:visibility="gone" />
 
         <Button
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/form_button_cancel"
-            android:id="@+id/button_cancel"
-            android:onClick="unscheduleSms"
-            android:visibility="gone" />
+            android:text="@string/form_button_add"
+            android:id="@+id/button_add"
+            android:onClick="scheduleSms" />
 
     </LinearLayout>
 

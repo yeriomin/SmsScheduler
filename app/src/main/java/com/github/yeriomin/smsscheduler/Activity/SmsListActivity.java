@@ -6,16 +6,34 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.DbHelper;
+import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.SmsModel;
 
 public class SmsListActivity extends ListActivity {
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                startActivityForResult(new Intent(this, SmsSchedulerPreferenceActivity.class), 1);
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onResume() {
