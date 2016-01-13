@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Sms Scheduler</string>
+    <string name="app_name" translatable="false">SMS Scheduler</string>
     <string name="contact_format" translatable="false">%1$s <![CDATA[<]]>%2$s<![CDATA[>]]></string>
     <string name="form_hint_contact">To</string>
     <string name="form_hint_message">Message</string>

@@ -1,5 +1,5 @@
 
-# SmsScheduler
+# SMS Scheduler
 An android app which lets you schedule an sms to be sent at a specific time
 
 This app is for you if:
