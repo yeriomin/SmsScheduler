@@ -22,4 +22,7 @@
     <string name="error_null_pdu">Erreur interne</string>
     <string name="error_radio_off">Appareil en mode avion</string>
     <string name="error_unknown">Erreur inconnue</string>
+    <string name="pref_send_delivery_report">Accusés de réception</string>
+    <string name="pref_send_delivery_report_summary">Certains opérateurs facturent pour des accusés de réception</string>
+    <string name="menu_settings">Paramètres</string>
 </resources>
