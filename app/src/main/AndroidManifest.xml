@@ -17,7 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.github.yeriomin.smsscheduler.Activity.AddSmsActivity" />
+        <activity android:name="com.github.yeriomin.smsscheduler.Activity.AddSmsActivity" android:screenOrientation="portrait" />
         <activity android:name="com.github.yeriomin.smsscheduler.Activity.SmsSchedulerPreferenceActivity" />
         <receiver android:name="com.github.yeriomin.smsscheduler.BootReceiver" android:exported="false">
             <intent-filter>
