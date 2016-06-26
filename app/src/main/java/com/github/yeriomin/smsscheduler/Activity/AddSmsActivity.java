@@ -39,7 +39,10 @@ import java.util.List;
 
 public class AddSmsActivity extends Activity {
 
-    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
+    final public static int RESULT_SCHEDULED = 1;
+    final public static int RESULT_UNSCHEDULED = 2;
+
+    final private static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     final private String[] permissionsRequired = new String[] {
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_CONTACTS
@@ -47,7 +50,7 @@ public class AddSmsActivity extends Activity {
 
     private GregorianCalendar timeScheduled = new GregorianCalendar();
     private SmsModel sms;
-    private ArrayList<String> permissionsGranted = new ArrayList<String>();
+    private ArrayList<String> permissionsGranted = new ArrayList<>();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,7 +106,7 @@ public class AddSmsActivity extends Activity {
         formContact.setText(recipient);
         formMessage.setText(message);
         buttonCancel.setVisibility(sms.getTimestampCreated() > 0 ? View.VISIBLE : View.GONE);
-        int stringId = sms.getStatus().contentEquals(sms.STATUS_PENDING)
+        int stringId = sms.getStatus().contentEquals(SmsModel.STATUS_PENDING)
                 ? R.string.form_button_cancel
                 : R.string.form_button_delete
                 ;
@@ -232,7 +235,9 @@ public class AddSmsActivity extends Activity {
 
         scheduleAlarm(sms);
 
-        goToSmsList();
+        Intent returnIntent = new Intent();
+        setResult(RESULT_SCHEDULED, returnIntent);
+        finish();
     }
 
     public void unscheduleSms(View view) {
@@ -240,12 +245,9 @@ public class AddSmsActivity extends Activity {
 
         unscheduleAlarm(sms);
 
-        goToSmsList();
-    }
-
-    private void goToSmsList() {
-        Intent goToNextActivity = new Intent(getApplicationContext(), SmsListActivity.class);
-        startActivity(goToNextActivity);
+        Intent returnIntent = new Intent();
+        setResult(RESULT_UNSCHEDULED, returnIntent);
+        finish();
     }
 
     private List<? extends HashMap<String, ?>> getContacts() {
@@ -291,7 +293,7 @@ public class AddSmsActivity extends Activity {
             while (phones.moveToNext()) {
                 String contactId = phones.getString(columnIndexId);
                 String phoneNumber = phones.getString(columnIndexPhone);
-                HashMap<String, String> NamePhoneType = new HashMap<String, String>();
+                HashMap<String, String> NamePhoneType = new HashMap<>();
                 NamePhoneType.put("Name", names.get(contactId));
                 NamePhoneType.put("Phone", phoneNumber);
                 contacts.add(NamePhoneType);
@@ -339,12 +341,12 @@ public class AddSmsActivity extends Activity {
     private boolean permissionsGranted() {
         boolean granted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ArrayList<String> permissionsNotGranted = new ArrayList<String>();
-            for (int i = 0; i < this.permissionsRequired.length; i++) {
-                if (checkSelfPermission(this.permissionsRequired[i]) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsNotGranted.add(this.permissionsRequired[i]);
+            ArrayList<String> permissionsNotGranted = new ArrayList<>();
+            for (String required : this.permissionsRequired) {
+                if (checkSelfPermission(required) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsNotGranted.add(required);
                 } else {
-                    this.permissionsGranted.add(this.permissionsRequired[i]);
+                    this.permissionsGranted.add(required);
                 }
             }
             if (permissionsNotGranted.size() > 0) {

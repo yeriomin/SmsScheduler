@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
     <string name="form_hint_contact">À</string>
     <string name="form_hint_message">Message</string>
     <string name="form_button_add">Planifier</string>
@@ -25,4 +26,6 @@
     <string name="pref_send_delivery_report">Accusés de réception</string>
     <string name="pref_send_delivery_report_summary">Certains opérateurs facturent pour des accusés de réception</string>
     <string name="menu_settings">Paramètres</string>
+    <string name="successfully_scheduled">Envoi est planifié</string>
+    <string name="successfully_unscheduled">Envoi annulé</string>
 </resources>
