@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -14,6 +13,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -25,12 +26,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.github.yeriomin.smsscheduler.AlarmReceiver;
-import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.DbHelper;
+import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.SmsModel;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,7 +39,10 @@ import java.util.List;
 
 public class AddSmsActivity extends Activity {
 
-    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
+    final public static int RESULT_SCHEDULED = 1;
+    final public static int RESULT_UNSCHEDULED = 2;
+
+    final private static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     final private String[] permissionsRequired = new String[] {
             Manifest.permission.SEND_SMS,
             Manifest.permission.READ_CONTACTS
@@ -48,7 +50,23 @@ public class AddSmsActivity extends Activity {
 
     private GregorianCalendar timeScheduled = new GregorianCalendar();
     private SmsModel sms;
-    private ArrayList<String> permissionsGranted = new ArrayList<String>();
+    private ArrayList<String> permissionsGranted = new ArrayList<>();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                startActivityForResult(new Intent(this, SmsSchedulerPreferenceActivity.class), 1);
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onResume() {
@@ -72,7 +90,7 @@ public class AddSmsActivity extends Activity {
         if (sms.getTimestampCreated() > 0) {
             timeScheduled.setTimeInMillis(sms.getTimestampScheduled());
             recipient = sms.getRecipientName().length() > 0
-                    ? sms.getRecipientName() + " <" + sms.getRecipientNumber() + ">"
+                    ? getString(R.string.contact_format, sms.getRecipientName(), sms.getRecipientNumber())
                     : sms.getRecipientNumber()
             ;
             message = sms.getMessage();
@@ -88,27 +106,37 @@ public class AddSmsActivity extends Activity {
         formContact.setText(recipient);
         formMessage.setText(message);
         buttonCancel.setVisibility(sms.getTimestampCreated() > 0 ? View.VISIBLE : View.GONE);
-        int stringId = sms.getStatus().contentEquals(sms.STATUS_PENDING)
+        int stringId = sms.getStatus().contentEquals(SmsModel.STATUS_PENDING)
                 ? R.string.form_button_cancel
                 : R.string.form_button_delete
                 ;
         buttonCancel.setText(getString(stringId));
 
         // Filling contacts list
-        SimpleAdapter adapter = new SimpleAdapter(
-                this,
-                getContacts(),
-                R.layout.item_contact,
-                new String[]{"Name", "Phone"},
-                new int[]{R.id.account_name, R.id.account_number}
-        );
-        formContact.setAdapter(adapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final SimpleAdapter adapter = new SimpleAdapter(
+                        getApplicationContext(),
+                        getContacts(),
+                        R.layout.item_contact,
+                        new String[]{"Name", "Phone"},
+                        new int[]{R.id.account_name, R.id.account_number}
+                );
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        formContact.setAdapter(adapter);
+                    }
+                });
+            }
+        }).start();
         formContact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 HashMap<String, String> recipient = (HashMap<String, String>) parent.getItemAtPosition(position);
                 String name = recipient.get("Name"), phone = recipient.get("Phone");
-                formContact.setText(name + " <" + phone + ">");
+                formContact.setText(getString(R.string.contact_format, name, phone));
                 sms.setRecipientName(name);
                 sms.setRecipientNumber(phone);
             }
@@ -207,7 +235,9 @@ public class AddSmsActivity extends Activity {
 
         scheduleAlarm(sms);
 
-        goToSmsList();
+        Intent returnIntent = new Intent();
+        setResult(RESULT_SCHEDULED, returnIntent);
+        finish();
     }
 
     public void unscheduleSms(View view) {
@@ -215,46 +245,62 @@ public class AddSmsActivity extends Activity {
 
         unscheduleAlarm(sms);
 
-        goToSmsList();
-    }
-
-    private void goToSmsList() {
-        Intent goToNextActivity = new Intent(getApplicationContext(), SmsListActivity.class);
-        startActivity(goToNextActivity);
+        Intent returnIntent = new Intent();
+        setResult(RESULT_UNSCHEDULED, returnIntent);
+        finish();
     }
 
     private List<? extends HashMap<String, ?>> getContacts() {
         ArrayList<HashMap<String, String>> contacts = new ArrayList<>();
+        HashMap<String, String> names = new HashMap<>();
+
+        // Getting contact names
+        String[] projectionPeople = new String[] {
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME
+        };
         Cursor people = getContentResolver().query(
                 ContactsContract.Contacts.CONTENT_URI,
-                null,
+                projectionPeople,
                 null,
                 null,
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"
         );
-        while (people.moveToNext()) {
-            String contactName = people.getString(people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-            String contactId = people.getString(people.getColumnIndex(ContactsContract.Contacts._ID));
-            String hasPhone = people.getString(people.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-            if ((Integer.parseInt(hasPhone) > 0)) {
-                Cursor phones = getContentResolver().query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId,
-                        null,
-                        null
-                );
-                while (phones.moveToNext()) {
-                    String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    HashMap<String, String> NamePhoneType = new HashMap<String, String>();
-                    NamePhoneType.put("Name", contactName);
-                    NamePhoneType.put("Phone", phoneNumber);
-                    contacts.add(NamePhoneType);
-                }
-                phones.close();
+        if (null != people) {
+            int columnIndexId = people.getColumnIndex(ContactsContract.Contacts._ID);
+            int columnIndexName = people.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
+            while (people.moveToNext()) {
+                names.put(people.getString(columnIndexId), people.getString(columnIndexName));
             }
+            people.close();
         }
+
+        // Getting phones
+        String[] projectionPhones = new String[] {
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+        Cursor phones = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projectionPhones,
+                null,
+                null,
+                null
+        );
+        if (null != phones) {
+            int columnIndexId = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+            int columnIndexPhone = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+            while (phones.moveToNext()) {
+                String contactId = phones.getString(columnIndexId);
+                String phoneNumber = phones.getString(columnIndexPhone);
+                HashMap<String, String> NamePhoneType = new HashMap<>();
+                NamePhoneType.put("Name", names.get(contactId));
+                NamePhoneType.put("Phone", phoneNumber);
+                contacts.add(NamePhoneType);
+            }
+            phones.close();
+        }
+
         return contacts;
     }
 
@@ -295,12 +341,12 @@ public class AddSmsActivity extends Activity {
     private boolean permissionsGranted() {
         boolean granted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ArrayList<String> permissionsNotGranted = new ArrayList<String>();
-            for (int i = 0; i < this.permissionsRequired.length; i++) {
-                if (checkSelfPermission(this.permissionsRequired[i]) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsNotGranted.add(this.permissionsRequired[i]);
+            ArrayList<String> permissionsNotGranted = new ArrayList<>();
+            for (String required : this.permissionsRequired) {
+                if (checkSelfPermission(required) != PackageManager.PERMISSION_GRANTED) {
+                    permissionsNotGranted.add(required);
                 } else {
-                    this.permissionsGranted.add(this.permissionsRequired[i]);
+                    this.permissionsGranted.add(required);
                 }
             }
             if (permissionsNotGranted.size() > 0) {

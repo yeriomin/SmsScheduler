@@ -8,9 +8,14 @@ android {
         applicationId "com.github.yeriomin.smsscheduler"
         minSdkVersion 8
         targetSdkVersion 23
-        versionCode 1
-        versionName "0.1"
+        versionCode 3
+        versionName "0.3"
     }
+
+    lintOptions {
+        disable 'GoogleAppIndexingWarning','GoogleAppIndexingApiWarning'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,5 +26,4 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
 }

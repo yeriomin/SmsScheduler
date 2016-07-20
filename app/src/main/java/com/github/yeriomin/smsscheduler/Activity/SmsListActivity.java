@@ -6,16 +6,57 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.DbHelper;
+import com.github.yeriomin.smsscheduler.R;
 import com.github.yeriomin.smsscheduler.SmsModel;
 
 public class SmsListActivity extends ListActivity {
+
+    private final static int REQUEST_CODE = 1;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                startActivityForResult(new Intent(this, SmsSchedulerPreferenceActivity.class), 1);
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            int messageId;
+            switch (resultCode) {
+                case AddSmsActivity.RESULT_SCHEDULED:
+                    messageId = R.string.successfully_scheduled;
+                    break;
+                case AddSmsActivity.RESULT_UNSCHEDULED:
+                    messageId = R.string.successfully_unscheduled;
+                    break;
+                default:
+                    messageId = R.string.error_generic;
+                    System.out.println("Unknown AddSmsActivity result code: " + resultCode);
+                    break;
+            }
+            Toast.makeText(getApplicationContext(), getString(messageId), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -52,13 +93,13 @@ public class SmsListActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), AddSmsActivity.class);
                 intent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, String.valueOf(id));
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE);
             }
         });
     }
 
     public void gotoNextActivity(View view) {
-        startActivity(new Intent(getApplicationContext(), AddSmsActivity.class));
+        startActivityForResult(new Intent(getApplicationContext(), AddSmsActivity.class), REQUEST_CODE);
     }
 
     private SimpleCursorAdapter getSmsListAdapter() {

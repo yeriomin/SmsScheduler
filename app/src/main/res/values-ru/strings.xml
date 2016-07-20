@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <string name="form_hint_contact">Адресат</string>
     <string name="form_hint_message">Сообщение</string>
     <string name="form_button_add">Запланировать</string>
@@ -21,4 +23,9 @@
     <string name="error_null_pdu">Внутренняя ошибка</string>
     <string name="error_radio_off">Телефон в режиме \"В самолёте\"</string>
     <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="pref_send_delivery_report">Отчёты о доставке SMS</string>
+    <string name="pref_send_delivery_report_summary">Эта возможность может быть платной у некоторых операторов</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="successfully_scheduled">Отправка SMS запланирована</string>
+    <string name="successfully_unscheduled">Отправка SMS отменена</string>
 </resources>

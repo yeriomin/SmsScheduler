@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="form_hint_contact">À</string>
+    <string name="form_hint_message">Message</string>
+    <string name="form_button_add">Planifier</string>
+    <string name="form_button_cancel">Annuler</string>
+    <string name="form_button_delete">Supprimer</string>
+    <string name="form_validation_datetime">Veuillez choisir la date</string>
+    <string name="list_button_add">Planifier un message</string>
+    <string name="list_sms_info_template">%1$s à %2$s le %3$s</string>
+    <string name="list_status_pending">À envoyer</string>
+    <string name="list_status_failed">Échoué</string>
+    <string name="list_status_sent">Envoyé</string>
+    <string name="list_status_delivered">Transmis</string>
+    <string name="notification_title_success">Message envoyé</string>
+    <string name="notification_title_failure">Impossible d\'envoyer le message</string>
+    <string name="notification_message_success">Le message à %1$s a été envoyé avec succès</string>
+    <string name="notification_message_failure">Impossible d\'envoyer le message à %1$s : %2$s</string>
+    <string name="error_generic">Erreur interne</string>
+    <string name="error_no_service">Aucun service</string>
+    <string name="error_null_pdu">Erreur interne</string>
+    <string name="error_radio_off">Appareil en mode avion</string>
+    <string name="error_unknown">Erreur inconnue</string>
+    <string name="pref_send_delivery_report">Accusés de réception</string>
+    <string name="pref_send_delivery_report_summary">Certains opérateurs facturent pour des accusés de réception</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="successfully_scheduled">Envoi est planifié</string>
+    <string name="successfully_unscheduled">Envoi annulé</string>
+</resources>

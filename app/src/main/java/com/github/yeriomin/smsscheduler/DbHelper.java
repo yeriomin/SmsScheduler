@@ -120,12 +120,11 @@ public class DbHelper extends SQLiteOpenHelper {
                 "1"
         );
         if (cursor != null) {
-            SmsModel result = null;
-            if (cursor.moveToFirst()) {
-                result = buildObject(cursor);
-            }
+            ArrayList<SmsModel> results = getObjects(cursor);
             cursor.close();
-            return result;
+            if (results.size() > 0) {
+                return results.get(0);
+            }
         }
         return null;
     }
@@ -133,12 +132,9 @@ public class DbHelper extends SQLiteOpenHelper {
     public ArrayList<SmsModel> get(String status) {
         Cursor cursor = getCursor(status);
         if (cursor != null) {
-            ArrayList<SmsModel> result = new ArrayList<>();
-            while (cursor.moveToNext()) {
-                result.add(buildObject(cursor));
-            }
+            ArrayList<SmsModel> results = getObjects(cursor);
             cursor.close();
-            return result;
+            return results;
         }
         return null;
     }
@@ -149,15 +145,27 @@ public class DbHelper extends SQLiteOpenHelper {
         dbHelper.getReadableDatabase().delete(TABLE_SMS, selection, selectionArgs);
     }
 
-    private SmsModel buildObject(Cursor cursor) {
-        SmsModel result = new SmsModel();
-        result.setTimestampCreated(cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP_CREATED)));
-        result.setTimestampScheduled(cursor.getLong(cursor.getColumnIndex(COLUMN_TIMESTAMP_SCHEDULED)));
-        result.setRecipientNumber(cursor.getString(cursor.getColumnIndex(COLUMN_RECIPIENT_NUMBER)));
-        result.setRecipientName(cursor.getString(cursor.getColumnIndex(COLUMN_RECIPIENT_NAME)));
-        result.setMessage(cursor.getString(cursor.getColumnIndex(COLUMN_MESSAGE)));
-        result.setStatus(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS)));
-        result.setResult(cursor.getString(cursor.getColumnIndex(COLUMN_RESULT)));
+    private ArrayList<SmsModel> getObjects(Cursor cursor) {
+        ArrayList<SmsModel> result = new ArrayList<>();
+        int indexTimestampCreated = cursor.getColumnIndex(COLUMN_TIMESTAMP_CREATED);
+        int indexTimestampScheduled = cursor.getColumnIndex(COLUMN_TIMESTAMP_SCHEDULED);
+        int indexRecipientNumber = cursor.getColumnIndex(COLUMN_RECIPIENT_NUMBER);
+        int indexRecipientName = cursor.getColumnIndex(COLUMN_RECIPIENT_NAME);
+        int indexMessage = cursor.getColumnIndex(COLUMN_MESSAGE);
+        int indexStatus = cursor.getColumnIndex(COLUMN_STATUS);
+        int indexResult = cursor.getColumnIndex(COLUMN_RESULT);
+        SmsModel object;
+        while (cursor.moveToNext()) {
+            object = new SmsModel();
+            object.setTimestampCreated(cursor.getLong(indexTimestampCreated));
+            object.setTimestampScheduled(cursor.getLong(indexTimestampScheduled));
+            object.setRecipientNumber(cursor.getString(indexRecipientNumber));
+            object.setRecipientName(cursor.getString(indexRecipientName));
+            object.setMessage(cursor.getString(indexMessage));
+            object.setStatus(cursor.getString(indexStatus));
+            object.setResult(cursor.getString(indexResult));
+            result.add(object);
+        }
         return result;
     }
 }

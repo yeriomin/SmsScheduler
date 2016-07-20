@@ -1,57 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <TimePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/form_time"
-        android:layout_gravity="center_horizontal" />
-
-    <DatePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/form_date"
-        android:layout_gravity="center_horizontal" />
-
-    <AutoCompleteTextView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="@string/form_hint_contact"
-        android:id="@+id/form_input_contact" />
+        android:layout_height="wrap_content" >
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textCapSentences|textMultiLine"
-        android:hint="@string/form_hint_message"
-        android:id="@+id/form_input_message" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <Button
-            android:layout_width="0dip"
+        <TimePicker
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/form_button_add"
-            android:id="@+id/button_add"
-            android:onClick="scheduleSms" />
+            android:id="@+id/form_time"
+            android:layout_gravity="center_horizontal" />
 
-        <Button
-            android:layout_width="0dip"
+        <DatePicker
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/form_button_cancel"
-            android:id="@+id/button_cancel"
-            android:onClick="unscheduleSms"
-            android:visibility="gone" />
+            android:id="@+id/form_date"
+            android:layout_gravity="center_horizontal" />
+
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:hint="@string/form_hint_contact"
+            android:id="@+id/form_input_contact" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapSentences|textMultiLine"
+            android:hint="@string/form_hint_message"
+            android:id="@+id/form_input_message" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <Button
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/form_button_cancel"
+                android:id="@+id/button_cancel"
+                android:onClick="unscheduleSms"
+                android:visibility="gone" />
+
+            <Button
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/form_button_add"
+                android:id="@+id/button_add"
+                android:onClick="scheduleSms" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

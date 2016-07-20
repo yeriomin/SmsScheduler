@@ -127,7 +127,7 @@ public abstract class WakefulBroadcastReceiver extends BroadcastReceiver {
             // We just log a warning here if there is no wake lock found, which could
             // happen for example if this function is called twice on the same
             // intent or the process is killed and restarted before processing the intent.
-            Log.w("WakefulBroadcastReceiver", "No active wake lock id #" + id);
+            Log.w("WakefulBroadcastReceive", "No active wake lock id #" + id);
             return true;
         }
     }
