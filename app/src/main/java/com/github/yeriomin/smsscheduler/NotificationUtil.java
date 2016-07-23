@@ -34,7 +34,7 @@ public class NotificationUtil {
             // try to call "setLatestEventInfo" if available
             Method m = notification.getClass().getMethod("setLatestEventInfo", Context.class, CharSequence.class, CharSequence.class, PendingIntent.class);
             m.invoke(notification, context, title, text, pendingIntent);
-            notification.flags &= Notification.FLAG_AUTO_CANCEL;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
         } catch (Exception e) {
             // do nothing
         }
