@@ -40,7 +40,7 @@ public class SmsListActivity extends ListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE && resultCode != 0) {
             int messageId;
             switch (resultCode) {
                 case AddSmsActivity.RESULT_SCHEDULED:
