@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AutoCompleteTextView">
+        <item name="android:colorBackground">?android:attr/colorBackground</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    </style>
+</resources>
