@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">SMS Scheduler</string>
+    <string name="contact_format" translatable="false">%1$s <![CDATA[<]]>%2$s<![CDATA[>]]></string>
+    <string name="form_hint_contact">An</string>
+    <string name="form_hint_message">Nachricht</string>
+    <string name="form_button_add">Planen</string>
+    <string name="form_button_cancel">Abbrechen</string>
+    <string name="form_button_delete">Löschen</string>
+    <string name="form_validation_datetime">Bitte Datum in der Zukunft wählen</string>
+    <string name="list_button_add">Eine Nachricht planen</string>
+    <string name="list_sms_info_template">%1$s an %2$s um %3$s</string>
+    <string name="list_status_pending">Versand geplant</string>
+    <string name="list_status_failed">Fehlgeschlagen</string>
+    <string name="list_status_sent">Gesendet</string>
+    <string name="list_status_delivered">Versendet</string>
+    <string name="notification_title_success">Nachricht versendet</string>
+    <string name="notification_title_failure">Nachricht konnte nicht gesendet werden</string>
+    <string name="notification_message_success">Die Nachricht an %1$s wurde erfolgreich versandt</string>
+    <string name="notification_message_failure">Nachricht konnte nicht gesendet werden: %1$s: %2$s</string>
+    <string name="error_generic">Interner Fehler</string>
+    <string name="error_no_service">Kein Netz</string>
+    <string name="error_null_pdu">Interner Fehler</string>
+    <string name="error_radio_off">Das Telefon befindet sich im Flugmodus</string>
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="pref_send_delivery_report">Versandbestätigungen</string>
+    <string name="pref_send_delivery_report_summary">Manche Netzanbieter erheben Gebühren für Versandbestätigungen</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="successfully_scheduled">SMS-Versand erfolgreich geplant</string>
+    <string name="successfully_unscheduled">SMS-Versand abgebrochen</string>
+</resources>
