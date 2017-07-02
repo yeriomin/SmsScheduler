@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="form_hint_contact">Para</string>
+    <string name="form_hint_message">Mensaje</string>
+    <string name="form_button_add">Programar</string>
+    <string name="form_button_cancel">Cancelar</string>
+    <string name="form_button_delete">Borrar</string>
+    <string name="form_validation_datetime">Elija fecha posterior</string>
+    <string name="list_button_add">Programar un mensaje</string>
+    <string name="list_sms_info_template">%1$s a %2$s el %3$s</string>
+    <string name="list_status_pending">Se enviará</string>
+    <string name="list_status_failed">Sin éxito</string>
+    <string name="list_status_sent">Enviado</string>
+    <string name="list_status_delivered">Enviado</string>
+    <string name="notification_title_success">Mensaje enviado</string>
+    <string name="notification_title_failure">No se puede enviar el mensaje</string>
+    <string name="notification_message_success">Mensaje para %1$s se ha enviado con éxito</string>
+    <string name="notification_message_failure">No se puede enviar mensaje para %1$s: %2$s</string>
+    <string name="error_generic">Error interno</string>
+    <string name="error_no_service">Sin servicio</string>
+    <string name="error_null_pdu">Error interno</string>
+    <string name="error_radio_off">Teléfono en modo avión</string>
+    <string name="error_unknown">Error desconocido</string>
+    <string name="pref_send_delivery_report">Informe de entrega</string>
+    <string name="pref_send_delivery_report_summary">Algunas compañías cobran por informes de entrega de SMS</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="successfully_scheduled">Envío de SMS previsto</string>
+    <string name="successfully_unscheduled">Envío de SMS cancelado</string>
+</resources>
