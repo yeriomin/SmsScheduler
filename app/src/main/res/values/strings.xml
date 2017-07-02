@@ -26,6 +26,6 @@
     <string name="pref_send_delivery_report">Delivery reports</string>
     <string name="pref_send_delivery_report_summary">Some carriers charge for SMS delivery reports</string>
     <string name="menu_settings">Settings</string>
-    <string name="successfully_scheduled">Отправка SMS запланирована</string>
-    <string name="successfully_unscheduled">Отправка SMS отменена</string>
+    <string name="successfully_scheduled">Message scheduled</string>
+    <string name="successfully_unscheduled">Message unscheduled</string>
 </resources>
