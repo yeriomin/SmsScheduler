@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">SMS Scheduler</string>
-    <string name="contact_format" translatable="false">%1$s <![CDATA[<]]>%2$s<![CDATA[>]]></string>
     <string name="form_hint_contact">An</string>
     <string name="form_hint_message">Nachricht</string>
     <string name="form_button_add">Planen</string>
