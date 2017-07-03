@@ -1,6 +1,11 @@
 package com.github.yeriomin.smsscheduler;
 
-public class SmsModel {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.GregorianCalendar;
+
+public class SmsModel implements Parcelable {
 
     public static final String ERROR_UNKNOWN = "UNKNOWN";
     public static final String ERROR_GENERIC = "GENERIC";
@@ -14,13 +19,17 @@ public class SmsModel {
     public static final String STATUS_FAILED = "FAILED";
 
     private long timestampCreated;
-    private long timestampScheduled;
     private String recipientNumber;
     private String recipientName;
     private String message;
     private String status = STATUS_PENDING;
 
     private String result = "";
+    private GregorianCalendar calendar = new GregorianCalendar();
+
+    public SmsModel() {
+        calendar.setTimeInMillis(System.currentTimeMillis());
+    }
 
     public int getId() {
         return (int) (getTimestampCreated() / 1000);
@@ -35,11 +44,11 @@ public class SmsModel {
     }
 
     public Long getTimestampScheduled() {
-        return timestampScheduled;
+        return calendar.getTimeInMillis();
     }
 
     public void setTimestampScheduled(long timestampScheduled) {
-        this.timestampScheduled = timestampScheduled;
+        calendar.setTimeInMillis(timestampScheduled);
     }
 
     public String getRecipientNumber() {
@@ -81,4 +90,44 @@ public class SmsModel {
     public void setResult(String result) {
         this.result = result;
     }
+
+    public GregorianCalendar getCalendar() {
+        return calendar;
+    }
+
+    public SmsModel(Parcel in) {
+        timestampCreated = in.readLong();
+        calendar.setTimeInMillis(in.readLong());
+        recipientNumber = in.readString();
+        recipientName = in.readString();
+        message = in.readString();
+        status = in.readString();
+        result = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(timestampCreated);
+        dest.writeLong(calendar.getTimeInMillis());
+        dest.writeString(recipientNumber);
+        dest.writeString(recipientName);
+        dest.writeString(message);
+        dest.writeString(status);
+        dest.writeString(result);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SmsModel createFromParcel(Parcel in) {
+            return new SmsModel(in);
+        }
+
+        public SmsModel[] newArray(int size) {
+            return new SmsModel[size];
+        }
+    };
 }

@@ -30,32 +30,30 @@ public class SmsListActivity extends ListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                startActivityForResult(new Intent(this, SmsSchedulerPreferenceActivity.class), 1);
-                break;
+        if (item.getItemId() == R.id.menu_settings) {
+            startActivityForResult(new Intent(this, SmsSchedulerPreferenceActivity.class), 1);
         }
         return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode != 0) {
-            int messageId;
-            switch (resultCode) {
-                case AddSmsActivity.RESULT_SCHEDULED:
-                    messageId = R.string.successfully_scheduled;
-                    break;
-                case AddSmsActivity.RESULT_UNSCHEDULED:
-                    messageId = R.string.successfully_unscheduled;
-                    break;
-                default:
-                    messageId = R.string.error_generic;
-                    System.out.println("Unknown AddSmsActivity result code: " + resultCode);
-                    break;
-            }
-            Toast.makeText(getApplicationContext(), getString(messageId), Toast.LENGTH_SHORT).show();
+        if (requestCode != REQUEST_CODE || resultCode == 0) {
+            return;
         }
+        int messageId;
+        switch (resultCode) {
+            case AddSmsActivity.RESULT_SCHEDULED:
+                messageId = R.string.successfully_scheduled;
+                break;
+            case AddSmsActivity.RESULT_UNSCHEDULED:
+                messageId = R.string.successfully_unscheduled;
+                break;
+            default:
+                messageId = R.string.error_generic;
+                break;
+        }
+        Toast.makeText(getApplicationContext(), getString(messageId), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,7 +90,7 @@ public class SmsListActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), AddSmsActivity.class);
-                intent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, String.valueOf(id));
+                intent.putExtra(AddSmsActivity.INTENT_SMS_ID, id);
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });

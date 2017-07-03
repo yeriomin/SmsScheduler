@@ -3,13 +3,12 @@ package com.github.yeriomin.smsscheduler;
 import android.app.Activity;
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.telephony.SmsManager;
 
 import com.github.yeriomin.smsscheduler.Activity.SmsListActivity;
+import com.github.yeriomin.smsscheduler.notification.NotificationManagerWrapper;
 
 public class SmsSentService extends IntentService {
 
@@ -65,14 +64,16 @@ public class SmsSentService extends IntentService {
             message = context.getString(R.string.notification_message_failure, sms.getRecipientName(), errorString);
         }
         DbHelper.getDbHelper(context).save(sms);
-        notify(context, intent, title, message, sms.getId());
+        notify(context, title, message, sms.getId());
     }
 
-    private void notify(Context context, Intent intent, String title, String message, int id) {
-        Intent myIntent = new Intent(context, SmsListActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, myIntent, 0);
-        Notification notification = NotificationUtil.createNotification(context, pendingIntent, title, message, R.drawable.ic_notification);
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(id, notification);
+    private void notify(Context context, String title, String message, int id) {
+        Notification notification = NotificationManagerWrapper.getBuilder(context)
+            .setIntent(new Intent(context, SmsListActivity.class))
+            .setMessage(message)
+            .setTitle(title)
+            .build()
+        ;
+        new NotificationManagerWrapper(context).show(id, notification);
     }
 }
