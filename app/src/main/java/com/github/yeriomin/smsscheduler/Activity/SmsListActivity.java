@@ -1,4 +1,4 @@
-package com.github.yeriomin.smsscheduler.Activity;
+package com.github.yeriomin.smsscheduler.activity;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -65,16 +65,14 @@ public class SmsListActivity extends ListActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        SimpleCursorAdapter adapter = (SimpleCursorAdapter) getListAdapter();
-        adapter.getCursor().close();
+        ((SimpleCursorAdapter) getListAdapter()).getCursor().close();
         DbHelper.closeDbHelper();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SimpleCursorAdapter adapter = (SimpleCursorAdapter) getListAdapter();
-        adapter.getCursor().close();
+        ((SimpleCursorAdapter) getListAdapter()).getCursor().close();
         DbHelper.closeDbHelper();
     }
 
@@ -82,8 +80,7 @@ public class SmsListActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LayoutInflater lf = getLayoutInflater();
-        View headerView = lf.inflate(R.layout.item_add, getListView(), false);
+        View headerView = getLayoutInflater().inflate(R.layout.item_add, getListView(), false);
         headerView.setClickable(true);
         getListView().addHeaderView(headerView);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {

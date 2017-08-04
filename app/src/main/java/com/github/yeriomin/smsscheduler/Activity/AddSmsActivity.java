@@ -1,4 +1,4 @@
-package com.github.yeriomin.smsscheduler.Activity;
+package com.github.yeriomin.smsscheduler.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,9 +71,9 @@ public class AddSmsActivity extends Activity {
     }
 
     private void buildForm() {
-        EditText formMessage = (EditText) findViewById(R.id.form_input_message);
+        EditText formMessage = findViewById(R.id.form_input_message);
         formMessage = (EditText) new BuilderMessage().setView(formMessage).setSms(sms).build();
-        AutoCompleteTextView formContact = (AutoCompleteTextView) findViewById(R.id.form_input_contact);
+        AutoCompleteTextView formContact = findViewById(R.id.form_input_contact);
         formContact = (AutoCompleteTextView) new BuilderContact().setView(formContact).setSms(sms).setActivity(this).build();
         TextWatcher watcherEmptiness = new EmptinessTextWatcher(this, formContact, formMessage);
         formContact.addTextChangedListener(watcherEmptiness);
@@ -106,14 +105,11 @@ public class AddSmsActivity extends Activity {
         // Filling existing sms info if possible
         long smsId = getIntent().getLongExtra(INTENT_SMS_ID, 0L);
         if (smsId > 0) {
-            Log.i(getClass().getName(), "Sms id passed with intent: " + smsId);
             sms = DbHelper.getDbHelper(this).get(smsId);
         } else if (null != savedInstanceState) {
-            Log.i(getClass().getName(), "Getting sms object from saved instance state");
             sms = savedInstanceState.getParcelable(SMS_STATE);
         }
         if (null == sms) {
-            Log.i(getClass().getName(), "New sms form");
             sms = new SmsModel();
         }
     }
@@ -150,7 +146,7 @@ public class AddSmsActivity extends Activity {
 
     public void unscheduleSms(View view) {
         DbHelper.getDbHelper(this).delete(sms.getTimestampCreated());
-        new Scheduler(getApplicationContext()).unschedule(sms);
+        new Scheduler(getApplicationContext()).unschedule(sms.getTimestampCreated());
         setResult(RESULT_UNSCHEDULED, new Intent());
         finish();
     }
