@@ -16,8 +16,10 @@
     <string name="list_status_delivered">Доставлено</string>
     <string name="notification_title_success">Сообщение отправлено</string>
     <string name="notification_title_failure">Не удалось отправить сообщение</string>
+    <string name="notification_title_will_send_in_an_hour">Отправка сообщения через час</string>
     <string name="notification_message_success">Сообщение адресату %1$s отправлено</string>
     <string name="notification_message_failure">Не удалось отправить сообщение адресату %1$s: %2$s</string>
+    <string name="notification_message_will_send_in_an_hour">Адресат %1$s</string>
     <string name="error_generic">Внутренняя ошибка</string>
     <string name="error_no_service">Нет связи с оператором</string>
     <string name="error_null_pdu">Внутренняя ошибка</string>
@@ -25,6 +27,9 @@
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="pref_send_delivery_report">Отчёты о доставке SMS</string>
     <string name="pref_send_delivery_report_summary">Эта возможность может быть платной у некоторых операторов</string>
+    <string name="pref_reminders">Переспросить перед отправкой</string>
+    <string name="pref_reminders_summary_on">За час до отправки появится напоминание в области уведомлений</string>
+    <string name="pref_reminders_summary_off">Сейчас напоминания отключены</string>
     <string name="menu_settings">Настройки</string>
     <string name="successfully_scheduled">Отправка SMS запланирована</string>
     <string name="successfully_unscheduled">Отправка SMS отменена</string>

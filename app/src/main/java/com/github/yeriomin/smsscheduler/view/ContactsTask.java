@@ -6,8 +6,8 @@ import android.provider.ContactsContract;
 import android.widget.AutoCompleteTextView;
 import android.widget.SimpleAdapter;
 
-import com.github.yeriomin.smsscheduler.Activity.AddSmsActivity;
 import com.github.yeriomin.smsscheduler.R;
+import com.github.yeriomin.smsscheduler.activity.AddSmsActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

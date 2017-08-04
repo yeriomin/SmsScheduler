@@ -131,4 +131,19 @@ public abstract class WakefulBroadcastReceiver extends BroadcastReceiver {
             return true;
         }
     }
+
+    static public final String RESULT_CODE = "resultCode";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.i(getClass().getName(), "Received intent");
+        Intent serviceIntent = new Intent(context, getServiceClass());
+        if (null != intent.getExtras()) {
+            serviceIntent.putExtras(intent.getExtras());
+        }
+        serviceIntent.putExtra(RESULT_CODE, getResultCode());
+        startWakefulService(context, serviceIntent);
+    }
+
+    abstract protected Class getServiceClass();
 }

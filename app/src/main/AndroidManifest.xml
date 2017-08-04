@@ -10,32 +10,30 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true" >
-        <activity android:name="com.github.yeriomin.smsscheduler.Activity.SmsListActivity" android:launchMode="singleTop">
+
+        <activity android:name=".activity.SmsListActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.github.yeriomin.smsscheduler.Activity.AddSmsActivity" android:screenOrientation="portrait" />
-        <activity android:name="com.github.yeriomin.smsscheduler.Activity.SmsSchedulerPreferenceActivity" />
-        <receiver android:name="com.github.yeriomin.smsscheduler.BootReceiver" android:exported="false">
+        <activity android:name=".activity.AddSmsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activity.SmsSchedulerPreferenceActivity" />
+
+        <receiver android:name=".BootReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.github.yeriomin.smsscheduler.AlarmReceiver" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.github.yeriomin.smsscheduler.AlarmReceiver.INTENT_FILTER" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.github.yeriomin.smsscheduler.SmsSentReceiver" />
-        <receiver android:name="com.github.yeriomin.smsscheduler.SmsDeliveredReceiver" />
-        <service android:name="com.github.yeriomin.smsscheduler.SmsSenderService" android:exported="false" >
-            <intent-filter>
-                <action android:name="com.github.yeriomin.smsscheduler.AlarmReceiver.INTENT_FILTER" />
-            </intent-filter>
-        </service>
-        <service android:name="com.github.yeriomin.smsscheduler.SmsSentService" />
-        <service android:name="com.github.yeriomin.smsscheduler.SmsDeliveredService" />
+        <receiver android:name=".ReminderReceiver"/>
+        <receiver android:name=".SmsSenderReceiver"/>
+        <receiver android:name=".SmsSentReceiver"/>
+        <receiver android:name=".SmsDeliveredReceiver"/>
+
+        <service android:name=".ReminderService"/>
+        <service android:name=".SmsSenderService" />
+        <service android:name=".SmsSentService" />
+        <service android:name=".SmsDeliveredService" />
+        <service android:name=".UnscheduleService"/>
     </application>
 </manifest>

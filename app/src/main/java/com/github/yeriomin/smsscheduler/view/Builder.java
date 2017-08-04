@@ -2,8 +2,8 @@ package com.github.yeriomin.smsscheduler.view;
 
 import android.view.View;
 
-import com.github.yeriomin.smsscheduler.Activity.AddSmsActivity;
 import com.github.yeriomin.smsscheduler.SmsModel;
+import com.github.yeriomin.smsscheduler.activity.AddSmsActivity;
 
 public abstract class Builder {
 

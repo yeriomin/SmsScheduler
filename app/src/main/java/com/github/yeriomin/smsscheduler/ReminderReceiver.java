@@ -1,9 +1,9 @@
 package com.github.yeriomin.smsscheduler;
 
-public class SmsSentReceiver extends WakefulBroadcastReceiver {
+public class ReminderReceiver extends WakefulBroadcastReceiver {
 
     @Override
     protected Class getServiceClass() {
-        return SmsSentService.class;
+        return ReminderService.class;
     }
 }

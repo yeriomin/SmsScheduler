@@ -1,32 +1,30 @@
 package com.github.yeriomin.smsscheduler;
 
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.util.Log;
 
-import com.github.yeriomin.smsscheduler.Activity.SmsSchedulerPreferenceActivity;
+import com.github.yeriomin.smsscheduler.activity.SmsSchedulerPreferenceActivity;
 
 import java.util.ArrayList;
 
-public class SmsSenderService extends IntentService {
-
-    private final static String SERVICE_NAME = "SmsSenderService";
+public class SmsSenderService extends SmsIntentService {
 
     public SmsSenderService() {
-        super(SERVICE_NAME);
+        super("SmsSenderService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        long smsId = intent.getExtras().getLong(DbHelper.COLUMN_TIMESTAMP_CREATED, 0);
-        if (smsId == 0) {
-            throw new RuntimeException("No SMS id provided with intent");
+        super.onHandleIntent(intent);
+        if (timestampCreated == 0) {
+            return;
         }
-        SmsModel sms = DbHelper.getDbHelper(this).get(smsId);
-        sendSms(sms);
+        Log.i(getClass().getName(), "Sending sms " + timestampCreated);
+        sendSms(DbHelper.getDbHelper(this).get(timestampCreated));
+        WakefulBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     private void sendSms(SmsModel sms) {
@@ -41,10 +39,12 @@ public class SmsSenderService extends IntentService {
         PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, sentIntent, 0);
 
         PendingIntent deliveredPendingIntent = null;
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean deliveryReports = prefs.getBoolean(SmsSchedulerPreferenceActivity.PREFERENCE_DELIVERY_REPORTS, false);
+        boolean deliveryReports = PreferenceManager
+            .getDefaultSharedPreferences(getApplicationContext())
+            .getBoolean(SmsSchedulerPreferenceActivity.PREFERENCE_DELIVERY_REPORTS, false)
+        ;
         if (deliveryReports) {
-            deliveredPendingIntents = new ArrayList<PendingIntent>();
+            deliveredPendingIntents = new ArrayList<>();
             Intent deliveredIntent = new Intent(this, SmsDeliveredReceiver.class);
             deliveredIntent.setAction(smsId.toString());
             deliveredIntent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, smsId);

@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -83,7 +82,7 @@ public class DbHelper extends SQLiteOpenHelper {
             String[] whereArgs = new String[] {sms.getTimestampCreated().toString()};
             dbHelper.getWritableDatabase().update(TABLE_SMS, values, whereClause, whereArgs);
         } else {
-            long timestampCreated = Calendar.getInstance().getTimeInMillis();
+            long timestampCreated = System.currentTimeMillis();
             sms.setTimestampCreated(timestampCreated);
             values.put(COLUMN_TIMESTAMP_CREATED, timestampCreated);
             dbHelper.getWritableDatabase().insert(TABLE_SMS, null, values);
@@ -91,8 +90,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getCursor() {
-        String selection = "";
-        return getCursor(selection);
+        return getCursor("");
     }
 
     public Cursor getCursor(String status) {

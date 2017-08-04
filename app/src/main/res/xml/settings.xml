@@ -3,9 +3,17 @@
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="prefSendDeliveryReport"
+        android:key="PREFERENCE_DELIVERY_REPORTS"
         android:summary="@string/pref_send_delivery_report_summary"
         android:title="@string/pref_send_delivery_report" >
+    </CheckBoxPreference>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="PREFERENCE_REMINDERS"
+        android:summaryOn="@string/pref_reminders_summary_on"
+        android:summaryOff="@string/pref_reminders_summary_off"
+        android:title="@string/pref_reminders" >
     </CheckBoxPreference>
 
 </PreferenceScreen>

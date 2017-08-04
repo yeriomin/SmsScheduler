@@ -5,40 +5,61 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.preference.PreferenceManager;
+
+import com.github.yeriomin.smsscheduler.activity.SmsSchedulerPreferenceActivity;
 
 public class Scheduler {
 
+    static private final long HOUR = 1000L*60L*60L;
+
     private Context context;
+    private AlarmManager alarmManager;
 
     public Scheduler(Context context) {
         this.context = context;
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
     public void schedule(SmsModel sms) {
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, sms.getTimestampScheduled(), getAlarmPendingIntent(sms));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, sms.getTimestampScheduled(), getAlarmPendingIntent(sms));
-        } else {
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, sms.getTimestampScheduled(), getAlarmPendingIntent(sms));
+        if (null == alarmManager) {
+            return;
+        }
+        setAlarm(sms.getTimestampScheduled(), getAlarmPendingIntent(sms.getTimestampCreated(), SmsSenderReceiver.class));
+        if (PreferenceManager
+            .getDefaultSharedPreferences(context)
+            .getBoolean(SmsSchedulerPreferenceActivity.PREFERENCE_REMINDERS, false)
+        ) {
+            setAlarm(sms.getTimestampScheduled() - HOUR, getAlarmPendingIntent(sms.getTimestampCreated(), ReminderReceiver.class));
         }
     }
 
-    public void unschedule(SmsModel sms) {
-        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(getAlarmPendingIntent(sms));
+    public void unschedule(long timestampCreated) {
+        if (null == alarmManager) {
+            return;
+        }
+        alarmManager.cancel(getAlarmPendingIntent(timestampCreated, SmsSenderReceiver.class));
+        alarmManager.cancel(getAlarmPendingIntent(timestampCreated, ReminderReceiver.class));
     }
 
-    private PendingIntent getAlarmPendingIntent(SmsModel sms) {
-        Intent intent = new Intent(AlarmReceiver.INTENT_FILTER);
-        intent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, sms.getTimestampCreated());
+    private void setAlarm(long timestamp, PendingIntent intent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timestamp, intent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timestamp, intent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, intent);
+        }
+    }
+
+    private PendingIntent getAlarmPendingIntent(long timestampCreated, Class receiverClass) {
+        Intent intent = new Intent(context, receiverClass);
+        intent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, timestampCreated);
         return PendingIntent.getBroadcast(
             context,
-            sms.getId(),
+            (int) (timestampCreated / 1000L),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT & Intent.FILL_IN_DATA
         );
     }
-
 }

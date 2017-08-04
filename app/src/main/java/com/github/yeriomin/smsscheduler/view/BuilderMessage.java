@@ -17,12 +17,12 @@ public class BuilderMessage extends Builder {
         getView().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                sms.setMessage(String.valueOf(s));
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                sms.setMessage(String.valueOf(s));
             }
 
             @Override

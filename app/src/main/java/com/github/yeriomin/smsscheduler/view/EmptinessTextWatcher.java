@@ -3,11 +3,10 @@ package com.github.yeriomin.smsscheduler.view;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 
-import com.github.yeriomin.smsscheduler.Activity.AddSmsActivity;
 import com.github.yeriomin.smsscheduler.R;
+import com.github.yeriomin.smsscheduler.activity.AddSmsActivity;
 
 public class EmptinessTextWatcher implements TextWatcher {
     private AddSmsActivity addSmsActivity;
@@ -30,7 +29,6 @@ public class EmptinessTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        final Button button = (Button) addSmsActivity.findViewById(R.id.button_add);
-        button.setEnabled(formContact.getText().length() > 0 && formMessage.getText().length() > 0);
+        addSmsActivity.findViewById(R.id.button_add).setEnabled(formContact.getText().length() > 0 && formMessage.getText().length() > 0);
     }
 }

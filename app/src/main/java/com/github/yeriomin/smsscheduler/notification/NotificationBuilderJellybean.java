@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-class NotificationBuilderJellybean extends NotificationBuilderIcs {
+class NotificationBuilderJellybean extends NotificationBuilderHoneycomb {
 
     @Override
     public NotificationBuilder addAction(int iconId, int stringId, PendingIntent pendingIntent) {

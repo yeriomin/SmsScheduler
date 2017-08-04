@@ -18,10 +18,6 @@ abstract public class NotificationBuilder {
         return this;
     }
 
-    public NotificationBuilder setProgress(int max, int progress) {
-        return this;
-    }
-
     public NotificationBuilder(Context context) {
         this.context = context;
     }
