@@ -77,13 +77,14 @@ public class AddSmsActivity extends Activity {
     }
 
     private void buildForm() {
-        EditText formMessage = (EditText) findViewById(R.id.form_input_message);
-        formMessage = (EditText) new BuilderMessage().setView(formMessage).setSms(sms).build();
-        AutoCompleteTextView formContact = (AutoCompleteTextView) findViewById(R.id.form_input_contact);
-        formContact = (AutoCompleteTextView) new BuilderContact().setView(formContact).setSms(sms).setActivity(this).build();
+        EditText formMessage = findViewById(R.id.form_input_message);
+        AutoCompleteTextView formContact = findViewById(R.id.form_input_contact);
         TextWatcher watcherEmptiness = new EmptinessTextWatcher(this, formContact, formMessage);
         formContact.addTextChangedListener(watcherEmptiness);
         formMessage.addTextChangedListener(watcherEmptiness);
+
+        new BuilderMessage().setView(formMessage).setSms(sms).build();
+        new BuilderContact().setView(formContact).setSms(sms).setActivity(this).build();
 
         new BuilderSimCard().setActivity(this).setView(findViewById(R.id.form_sim_card)).setSms(sms).build();
         new BuilderRecurringMode()

@@ -92,6 +92,7 @@
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
                 android:text="@string/form_button_add"
                 android:id="@+id/button_add"
                 android:onClick="scheduleSms" />
