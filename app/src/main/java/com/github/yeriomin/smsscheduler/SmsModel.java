@@ -3,7 +3,7 @@ package com.github.yeriomin.smsscheduler;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 public class SmsModel implements Parcelable {
 
@@ -23,12 +23,15 @@ public class SmsModel implements Parcelable {
     private String recipientName;
     private String message;
     private String status = STATUS_PENDING;
+    private int subscriptionId;
+    private String recurringMode = CalendarResolver.RECURRING_NO;
 
     private String result = "";
-    private GregorianCalendar calendar = new GregorianCalendar();
+    private Calendar calendar = Calendar.getInstance();
 
     public SmsModel() {
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 1);
     }
 
     public int getId() {
@@ -91,7 +94,23 @@ public class SmsModel implements Parcelable {
         this.result = result;
     }
 
-    public GregorianCalendar getCalendar() {
+    public int getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(int subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public String getRecurringMode() {
+        return recurringMode;
+    }
+
+    public void setRecurringMode(String recurringMode) {
+        this.recurringMode = recurringMode;
+    }
+
+    public Calendar getCalendar() {
         return calendar;
     }
 
@@ -103,6 +122,8 @@ public class SmsModel implements Parcelable {
         message = in.readString();
         status = in.readString();
         result = in.readString();
+        subscriptionId = in.readInt();
+        recurringMode = in.readString();
     }
 
     @Override
@@ -119,6 +140,8 @@ public class SmsModel implements Parcelable {
         dest.writeString(message);
         dest.writeString(status);
         dest.writeString(result);
+        dest.writeInt(subscriptionId);
+        dest.writeString(recurringMode);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

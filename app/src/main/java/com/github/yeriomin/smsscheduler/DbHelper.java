@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -13,7 +14,7 @@ public class DbHelper extends SQLiteOpenHelper {
     private static DbHelper dbHelper;
 
     private static final String DATABASE_NAME = "SmsScheduler.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_SMS = "sms";
 
@@ -24,6 +25,8 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_MESSAGE = "message";
     public static final String COLUMN_STATUS = "status";
     public static final String COLUMN_RESULT = "result";
+    public static final String COLUMN_SUBSCRIPTION_ID = "subscriptionId";
+    public static final String COLUMN_RECURRING_MODE = "recurringMode";
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,25 +51,37 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_SMS_TABLE = "CREATE TABLE " + TABLE_SMS +
-                "(" +
-                COLUMN_TIMESTAMP_CREATED + " BIGINTEGER PRIMARY KEY," +
-                COLUMN_TIMESTAMP_SCHEDULED + " BIGINTEGER," +
-                COLUMN_RECIPIENT_NUMBER + " TEXT," +
-                COLUMN_RECIPIENT_NAME + " TEXT," +
-                COLUMN_MESSAGE + " TEXT," +
-                COLUMN_STATUS + " TEXT," +
-                COLUMN_RESULT + " TEXT" +
-                ")";
-        db.execSQL(CREATE_SMS_TABLE);
+        db.execSQL("CREATE TABLE " + TABLE_SMS +
+            "(" +
+            COLUMN_TIMESTAMP_CREATED + " BIGINTEGER PRIMARY KEY," +
+            COLUMN_TIMESTAMP_SCHEDULED + " BIGINTEGER," +
+            COLUMN_RECIPIENT_NUMBER + " TEXT," +
+            COLUMN_RECIPIENT_NAME + " TEXT," +
+            COLUMN_MESSAGE + " TEXT," +
+            COLUMN_STATUS + " TEXT," +
+            COLUMN_RESULT + " TEXT," +
+            COLUMN_SUBSCRIPTION_ID + " INTEGER," +
+            COLUMN_RECURRING_MODE + " TEXT" +
+            ")"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion != newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_SMS);
-            onCreate(db);
+        if (newVersion <= oldVersion) {
+            Log.i(getClass().getName(), "newVersion <= oldVersion");
+            return;
         }
+        if (oldVersion == 1 && newVersion >= 2) {
+            Log.i(getClass().getName(), "Upgrading DB! oldVersion == 1 && newVersion >= 2");
+            onUpgradeV2(db);
+            Log.i(getClass().getName(), "Done");
+        }
+    }
+
+    private void onUpgradeV2(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + TABLE_SMS + " ADD COLUMN " + COLUMN_SUBSCRIPTION_ID + " INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE " + TABLE_SMS + " ADD COLUMN " + COLUMN_RECURRING_MODE + " TEXT NOT NULL DEFAULT \"" + CalendarResolver.RECURRING_NO + "\"");
     }
 
     public void save(SmsModel sms) {
@@ -77,6 +92,8 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(COLUMN_MESSAGE, sms.getMessage());
         values.put(COLUMN_STATUS, sms.getStatus());
         values.put(COLUMN_RESULT, sms.getResult());
+        values.put(COLUMN_SUBSCRIPTION_ID, sms.getSubscriptionId());
+        values.put(COLUMN_RECURRING_MODE, sms.getRecurringMode());
         if (sms.getTimestampCreated() > 0) {
             String whereClause = COLUMN_TIMESTAMP_CREATED + "=?";
             String[] whereArgs = new String[] {sms.getTimestampCreated().toString()};
@@ -152,6 +169,8 @@ public class DbHelper extends SQLiteOpenHelper {
         int indexMessage = cursor.getColumnIndex(COLUMN_MESSAGE);
         int indexStatus = cursor.getColumnIndex(COLUMN_STATUS);
         int indexResult = cursor.getColumnIndex(COLUMN_RESULT);
+        int indexSubscriptionId = cursor.getColumnIndex(COLUMN_SUBSCRIPTION_ID);
+        int indexRecurringMode = cursor.getColumnIndex(COLUMN_RECURRING_MODE);
         SmsModel object;
         while (cursor.moveToNext()) {
             object = new SmsModel();
@@ -162,6 +181,8 @@ public class DbHelper extends SQLiteOpenHelper {
             object.setMessage(cursor.getString(indexMessage));
             object.setStatus(cursor.getString(indexStatus));
             object.setResult(cursor.getString(indexResult));
+            object.setSubscriptionId(cursor.getInt(indexSubscriptionId));
+            object.setRecurringMode(cursor.getString(indexRecurringMode));
             result.add(object);
         }
         return result;

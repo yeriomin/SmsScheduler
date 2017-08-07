@@ -8,6 +8,13 @@
     <string name="form_button_cancel">Отменить</string>
     <string name="form_button_delete">Удалить</string>
     <string name="form_validation_datetime">Выберите дату в будущем</string>
+    <string name="form_validation_contact">Выберите адресата</string>
+    <string name="form_validation_message">Сообщение не может быть пустым</string>
+    <string name="form_recurring_mode_no">Послать один раз</string>
+    <string name="form_recurring_mode_daily">Посылать каждый день</string>
+    <string name="form_recurring_mode_weekly">Посылать каждую неделю</string>
+    <string name="form_recurring_mode_monthly">Посылать каждый месяц</string>
+    <string name="form_recurring_mode_yearly">Посылать каждый год</string>
     <string name="list_button_add">Запланировать отправку</string>
     <string name="list_sms_info_template">%1$s адресату %2$s в %3$s</string>
     <string name="list_status_pending">Будет отправлено</string>

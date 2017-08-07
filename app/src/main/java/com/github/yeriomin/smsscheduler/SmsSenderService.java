@@ -1,9 +1,13 @@
 package com.github.yeriomin.smsscheduler;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.yeriomin.smsscheduler.activity.SmsSchedulerPreferenceActivity;
@@ -22,43 +26,74 @@ public class SmsSenderService extends SmsIntentService {
         if (timestampCreated == 0) {
             return;
         }
+        SmsModel sms = DbHelper.getDbHelper(this).get(timestampCreated);
         Log.i(getClass().getName(), "Sending sms " + timestampCreated);
-        sendSms(DbHelper.getDbHelper(this).get(timestampCreated));
+        sendSms(sms);
+        String recurringMode = sms.getRecurringMode();
+        if (!TextUtils.isEmpty(recurringMode) && !recurringMode.equals(CalendarResolver.RECURRING_NO)) {
+            Log.i(getClass().getName(), "Scheduling next sms");
+            scheduleNextSms(sms);
+        }
         WakefulBroadcastReceiver.completeWakefulIntent(intent);
     }
 
     private void sendSms(SmsModel sms) {
-        Long smsId = sms.getTimestampCreated();
+        ArrayList<PendingIntent> sentPendingIntents = new ArrayList<>();
+        ArrayList<PendingIntent> deliveredPendingIntents = new ArrayList<>();
+        PendingIntent sentPendingIntent = getPendingIntent(sms.getTimestampCreated(), SmsSentReceiver.class);
+        PendingIntent deliveredPendingIntent = getPendingIntent(sms.getTimestampCreated(), SmsDeliveredReceiver.class);
 
-        ArrayList<PendingIntent> sentPendingIntents = new ArrayList<PendingIntent>();
-        ArrayList<PendingIntent> deliveredPendingIntents = null;
-
-        Intent sentIntent = new Intent(this, SmsSentReceiver.class);
-        sentIntent.setAction(smsId.toString());
-        sentIntent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, smsId);
-        PendingIntent sentPendingIntent = PendingIntent.getBroadcast(this, 0, sentIntent, 0);
-
-        PendingIntent deliveredPendingIntent = null;
+        SmsManager smsManager = getSmsManager(sms.getSubscriptionId());
+        ArrayList<String> smsMessage = smsManager.divideMessage(sms.getMessage());
         boolean deliveryReports = PreferenceManager
             .getDefaultSharedPreferences(getApplicationContext())
             .getBoolean(SmsSchedulerPreferenceActivity.PREFERENCE_DELIVERY_REPORTS, false)
         ;
-        if (deliveryReports) {
-            deliveredPendingIntents = new ArrayList<>();
-            Intent deliveredIntent = new Intent(this, SmsDeliveredReceiver.class);
-            deliveredIntent.setAction(smsId.toString());
-            deliveredIntent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, smsId);
-            deliveredPendingIntent = PendingIntent.getBroadcast(this, 0, deliveredIntent, 0);
-        }
-
-        SmsManager smsManager = SmsManager.getDefault();
-        ArrayList<String> mSMSMessage = smsManager.divideMessage(sms.getMessage());
-        for (int i = 0; i < mSMSMessage.size(); i++) {
+        for (int i = 0; i < smsMessage.size(); i++) {
             sentPendingIntents.add(i, sentPendingIntent);
             if (deliveryReports) {
                 deliveredPendingIntents.add(i, deliveredPendingIntent);
             }
         }
-        smsManager.sendMultipartTextMessage(sms.getRecipientNumber(), null, mSMSMessage, sentPendingIntents, deliveredPendingIntents);
+        smsManager.sendMultipartTextMessage(
+            sms.getRecipientNumber(),
+            null,
+            smsMessage,
+            sentPendingIntents,
+            deliveryReports ? deliveredPendingIntents : null
+        );
+    }
+
+    private PendingIntent getPendingIntent(long smsId, Class receiverClass) {
+        Intent intent = new Intent(this, receiverClass);
+        intent.setAction(Long.toString(smsId));
+        intent.putExtra(DbHelper.COLUMN_TIMESTAMP_CREATED, smsId);
+        return PendingIntent.getBroadcast(this, 0, intent, 0);
+    }
+
+    private SmsManager getSmsManager(int subscriptionId) {
+        SmsManager smsManager = SmsManager.getDefault();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return smsManager;
+        }
+        SubscriptionManager subscriptionManager = (SubscriptionManager) getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+        if (null == subscriptionManager) {
+            return smsManager;
+        }
+        if (null == subscriptionManager.getActiveSubscriptionInfo(subscriptionId)) {
+            return smsManager;
+        }
+        return SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
+    }
+
+    private void scheduleNextSms(SmsModel sms) {
+        long oldTimestamp = sms.getTimestampScheduled();
+        new CalendarResolver().setCalendar(sms.getCalendar()).setRecurringMode(sms.getRecurringMode()).advance();
+        if (oldTimestamp == sms.getTimestampScheduled()) {
+            Log.w(getClass().getName(), "No valid next date found");
+        } else {
+            DbHelper.getDbHelper(this).save(sms);
+            new Scheduler(getApplicationContext()).schedule(sms);
+        }
     }
 }

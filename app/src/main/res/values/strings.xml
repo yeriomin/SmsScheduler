@@ -8,6 +8,13 @@
     <string name="form_button_cancel">Cancel</string>
     <string name="form_button_delete">Delete</string>
     <string name="form_validation_datetime">Please choose future date</string>
+    <string name="form_validation_contact">You must choose a contact</string>
+    <string name="form_validation_message">Message can not be empty</string>
+    <string name="form_recurring_mode_no">Send this message once</string>
+    <string name="form_recurring_mode_daily">Send this message daily</string>
+    <string name="form_recurring_mode_weekly">Send this message weekly</string>
+    <string name="form_recurring_mode_monthly">Send this message every month</string>
+    <string name="form_recurring_mode_yearly">Send this message every year</string>
     <string name="list_button_add">Schedule a message</string>
     <string name="list_sms_info_template">%1$s to %2$s at %3$s</string>
     <string name="list_status_pending">Will send</string>

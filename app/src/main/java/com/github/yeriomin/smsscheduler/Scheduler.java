@@ -6,8 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.github.yeriomin.smsscheduler.activity.SmsSchedulerPreferenceActivity;
+
+import java.text.DateFormat;
 
 public class Scheduler {
 
@@ -25,6 +28,7 @@ public class Scheduler {
         if (null == alarmManager) {
             return;
         }
+        Log.i(getClass().getName(), "Scheduling sms to " + DateFormat.getDateTimeInstance().format(sms.getCalendar().getTime()));
         setAlarm(sms.getTimestampScheduled(), getAlarmPendingIntent(sms.getTimestampCreated(), SmsSenderReceiver.class));
         if (PreferenceManager
             .getDefaultSharedPreferences(context)

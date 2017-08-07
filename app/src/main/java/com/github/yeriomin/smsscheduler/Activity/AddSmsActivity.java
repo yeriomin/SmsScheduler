@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.github.yeriomin.smsscheduler.DbHelper;
@@ -22,6 +25,8 @@ import com.github.yeriomin.smsscheduler.view.BuilderCancel;
 import com.github.yeriomin.smsscheduler.view.BuilderContact;
 import com.github.yeriomin.smsscheduler.view.BuilderDate;
 import com.github.yeriomin.smsscheduler.view.BuilderMessage;
+import com.github.yeriomin.smsscheduler.view.BuilderRecurringMode;
+import com.github.yeriomin.smsscheduler.view.BuilderSimCard;
 import com.github.yeriomin.smsscheduler.view.BuilderTime;
 import com.github.yeriomin.smsscheduler.view.EmptinessTextWatcher;
 
@@ -39,8 +44,9 @@ public class AddSmsActivity extends Activity {
     final private static String SMS_STATE = "SMS_STATE";
     final private static int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     final private String[] permissionsRequired = new String[] {
-            Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_CONTACTS
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.READ_CONTACTS
     };
 
     private SmsModel sms;
@@ -71,13 +77,24 @@ public class AddSmsActivity extends Activity {
     }
 
     private void buildForm() {
-        EditText formMessage = findViewById(R.id.form_input_message);
+        EditText formMessage = (EditText) findViewById(R.id.form_input_message);
         formMessage = (EditText) new BuilderMessage().setView(formMessage).setSms(sms).build();
-        AutoCompleteTextView formContact = findViewById(R.id.form_input_contact);
+        AutoCompleteTextView formContact = (AutoCompleteTextView) findViewById(R.id.form_input_contact);
         formContact = (AutoCompleteTextView) new BuilderContact().setView(formContact).setSms(sms).setActivity(this).build();
         TextWatcher watcherEmptiness = new EmptinessTextWatcher(this, formContact, formMessage);
         formContact.addTextChangedListener(watcherEmptiness);
         formMessage.addTextChangedListener(watcherEmptiness);
+
+        new BuilderSimCard().setActivity(this).setView(findViewById(R.id.form_sim_card)).setSms(sms).build();
+        new BuilderRecurringMode()
+            .setRecurringDayView((Spinner) findViewById(R.id.form_recurring_day))
+            .setRecurringMonthView((Spinner) findViewById(R.id.form_recurring_month))
+            .setDateView((DatePicker) findViewById(R.id.form_date))
+            .setActivity(this)
+            .setView(findViewById(R.id.form_recurring_mode))
+            .setSms(sms)
+            .build()
+        ;
 
         new BuilderTime().setActivity(this).setView(findViewById(R.id.form_time)).setSms(sms).build();
         new BuilderDate().setActivity(this).setView(findViewById(R.id.form_date)).setSms(sms).build();
@@ -102,7 +119,6 @@ public class AddSmsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_sms);
 
-        // Filling existing sms info if possible
         long smsId = getIntent().getLongExtra(INTENT_SMS_ID, 0L);
         if (smsId > 0) {
             sms = DbHelper.getDbHelper(this).get(smsId);
@@ -134,8 +150,7 @@ public class AddSmsActivity extends Activity {
     }
 
     public void scheduleSms(View view) {
-        if (sms.getTimestampScheduled() < GregorianCalendar.getInstance().getTimeInMillis()) {
-            Toast.makeText(getApplicationContext(), getString(R.string.form_validation_datetime), Toast.LENGTH_SHORT).show();
+        if (!validateForm()) {
             return;
         }
         DbHelper.getDbHelper(this).save(sms);
@@ -149,6 +164,23 @@ public class AddSmsActivity extends Activity {
         new Scheduler(getApplicationContext()).unschedule(sms.getTimestampCreated());
         setResult(RESULT_UNSCHEDULED, new Intent());
         finish();
+    }
+
+    private boolean validateForm() {
+        boolean result = true;
+        if (sms.getTimestampScheduled() < GregorianCalendar.getInstance().getTimeInMillis()) {
+            Toast.makeText(getApplicationContext(), getString(R.string.form_validation_datetime), Toast.LENGTH_SHORT).show();
+            result = false;
+        }
+        if (TextUtils.isEmpty(sms.getRecipientNumber())) {
+            ((AutoCompleteTextView) findViewById(R.id.form_input_contact)).setError(getString(R.string.form_validation_contact));
+            result = false;
+        }
+        if (TextUtils.isEmpty(sms.getMessage())) {
+            ((EditText) findViewById(R.id.form_input_message)).setError(getString(R.string.form_validation_message));
+            result = false;
+        }
+        return result;
     }
 
     private boolean permissionsGranted() {
