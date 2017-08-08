@@ -154,6 +154,7 @@ public class AddSmsActivity extends Activity {
         if (!validateForm()) {
             return;
         }
+        sms.setStatus(SmsModel.STATUS_PENDING);
         DbHelper.getDbHelper(this).save(sms);
         new Scheduler(getApplicationContext()).schedule(sms);
         setResult(RESULT_SCHEDULED, new Intent());
