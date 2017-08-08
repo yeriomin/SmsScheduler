@@ -32,6 +32,7 @@ public class BuilderSimCard extends Builder {
             return getView();
         }
         if (subscriptionManager.getActiveSubscriptionInfoCount() < 2) {
+            sms.setSubscriptionId(subscriptionManager.getActiveSubscriptionInfoList().get(0).getSubscriptionId());
             return getView();
         }
         getView().setVisibility(View.VISIBLE);
@@ -39,8 +40,13 @@ public class BuilderSimCard extends Builder {
         for (SubscriptionInfo info: subscriptionManager.getActiveSubscriptionInfoList()) {
             simCards.add(new Pair<>(info.getSubscriptionId(), info.getCarrierName().toString()));
         }
-        prepareRadioButton((RadioButton) getView().findViewById(R.id.radio_sim1), simCards.get(0));
-        prepareRadioButton((RadioButton) getView().findViewById(R.id.radio_sim2), simCards.get(1));
+        RadioButton radio1 = getView().findViewById(R.id.radio_sim1);
+        RadioButton radio2 = getView().findViewById(R.id.radio_sim2);
+        prepareRadioButton(radio1, simCards.get(0));
+        prepareRadioButton(radio2, simCards.get(1));
+        if (!radio1.isChecked() && !radio2.isChecked()) {
+            radio1.setChecked(true);
+        }
         return getView();
     }
 
