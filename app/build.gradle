@@ -8,8 +8,8 @@ android {
         applicationId "com.github.yeriomin.smsscheduler"
         minSdkVersion 5
         targetSdkVersion 26
-        versionCode 4
-        versionName "0.4"
+        versionCode 5
+        versionName "0.5"
     }
 
     lintOptions {
