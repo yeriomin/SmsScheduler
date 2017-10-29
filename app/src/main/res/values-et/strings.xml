@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="form_hint_contact">Saaja</string>
+    <string name="form_hint_message">Sõnum</string>
+    <string name="form_button_add">Ajakava</string>
+    <string name="form_button_cancel">Loobu</string>
+    <string name="form_button_delete">Kustuta</string>
+    <string name="form_validation_datetime">Palun vali tulevane kuupäev</string>
+    <string name="form_validation_contact">Pead valima kontakti</string>
+    <string name="form_validation_message">Sõnum ei või olla tühi</string>
+    <string name="form_recurring_mode_no">Saada sõnum üks kord</string>
+    <string name="form_recurring_mode_daily">Saada sõnum iga päev</string>
+    <string name="form_recurring_mode_weekly">Saada sõnum iga nädal</string>
+    <string name="form_recurring_mode_monthly">Saada sõnum iga kuu</string>
+    <string name="form_recurring_mode_yearly">Saada sõnum iga aasta</string>
+    <string name="list_button_add">Ajasta sõnum</string>
+    <string name="list_sms_info_template">%1$s-lt %2$-le: %3$s</string>
+    <string name="list_status_pending">Saadetakse</string>
+    <string name="list_status_failed">Nurjus</string>
+    <string name="list_status_sent">Saadetud</string>
+    <string name="list_status_delivered">Edastatud</string>
+    <string name="notification_title_success">Sõnum saadetud</string>
+    <string name="notification_title_failure">Ei saanud sõnumit saata</string>
+    <string name="notification_title_will_send_in_an_hour">Sõnum saadetakse tunni jooksul</string>
+    <string name="notification_message_success">Sõnum on %1$s-le edukalt edastatud</string>
+    <string name="notification_message_failure">Ei saanud saata sõnumit %1$s-le: %2$s</string>
+    <string name="notification_message_will_send_in_an_hour">See saadetakse %1$s-le</string>
+    <string name="error_generic">Sisemine viga</string>
+    <string name="error_no_service">Teenus puudub</string>
+    <string name="error_null_pdu">Sisemine viga</string>
+    <string name="error_radio_off">Telefon on lennureziimis</string>
+    <string name="error_unknown">Tundmatu viga</string>
+    <string name="pref_send_delivery_report">Edastus aruanded</string>
+    <string name="pref_send_delivery_report_summary">Osa operaatoreil on SMS edastus aruande tasuline</string>
+    <string name="pref_reminders">Meeldetuletus enne SMS saatmist</string>
+    <string name="pref_reminders_summary_on">Sind teavitatakse märguandega tund enne SMS saatmist</string>
+    <string name="pref_reminders_summary_off">Meeldetuletused on nüüd väljas</string>
+    <string name="menu_settings">Sätted</string>
+    <string name="successfully_scheduled">Sõnum ajakava lisatud</string>
+    <string name="successfully_unscheduled">Sõnum ajakavast eemaldatud</string>
+</resources>
